@@ -1,48 +1,54 @@
 <!DOCTYPE html>
 <html>
-  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.5.0/annyang.min.js"></script>
+  <script src="aframe-speech-command-component.js"></script>
+  <script src="app.js"></script>
+
   <!-- we import arjs version without NFT but with marker + location based support -->
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-analytics.js";
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-  
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "AIzaSyAdt7FLZLycvLK3q7dvQn5SxCElgcF-CWo",
-      authDomain: "ar-js-stage.firebaseapp.com",
-      projectId: "ar-js-stage",
-      storageBucket: "ar-js-stage.appspot.com",
-      messagingSenderId: "930920689506",
-      appId: "1:930920689506:web:0ee955cdd359ecf7d6063b",
-      measurementId: "G-DSBGVP8PNF"
-    };
-  
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-  </script>
+  <head>
+    <link rel="shortcut icon" href="#">
+  </head>
+
   <body style="margin : 0px; overflow: hidden;">
-    <a-scene embedded arjs>
+    <a-scene embedded arjs id="scene">
+      <a-assets>
+        <a-asset-item id="AI" response-type="arraybuffer" src="/uploads_files_2639757_gltf/gltf/glb/Wraith_Animated.glb"></a-asset-item>
+      </a-assets>
+
       <a-marker preset="hiro">
-        <!-- we use cors proxy to avoid cross-origin problems -->
-        <!--
-          ⚠️⚠️⚠️
-          https://arjs-cors-proxy.herokuapp.com/ is now offline, Heroku has dismissed all his free plans from November 2022.
-          You need to host your own proxy and use it instead. The proxy is based on CORS Anywhere (see https://github.com/Rob--W/cors-anywhere).
-          ⚠️⚠️⚠️
-        -->
-        <a-entity
-          position="0 0 0"
-          scale="0.05 0.05 0.05"
-          gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
-        ></a-entity>
+
+        <a-entity id="links" layout="type: line; margin: 1.5" position="0 0 0">
+          <a-entity template="src: #link" data-src="#cubes" data-thumb="#cubes-thumb"></a-entity>
+          <a-entity template="src: #link" data-src="#city" data-thumb="#city-thumb"></a-entity>
+          <a-entity template="src: #link" data-src="#sechelt" data-thumb="#sechelt-thumb"></a-entity>
+        </a-entity>
+
+        <a-entity position="0 0 0" rotation="-90 0 0" gltf-model="#AI" animation-mixer></a-entity>
+        <a-entity text="value: Test tekst van de AI;" rotation="-90 0 0"></a-entity>
+
+        <a-box button id="myButton" class="js--interact" color="pink" rotation="-90 0 0" position="2 0 0"></a-box>
+
       </a-marker>
-      <a-entity camera></a-entity>
+      <a-entity camera id="camera">
+        <a-entity
+        animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 550; from: 0.1 0.1 0.1; to: 1 1 1"
+        animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1000; from: 1 1 1; to: 0.1 0.1 0.1"
+        animation="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"
+        cursor = "fuse: true; fuseTimeout: 1000"
+        material = "color: black; shader: flat"
+        geometry = "primitive: ring; radiusInner: 0.007; radiusOuter: 0.01"
+        position = "0 0 -0.5"
+        raycaster = "objects: .js--interact"
+      ></a-entity>
+      </a-entity>
+      <!-- <a-camera position="0 0 0">    
+        <a-entity cursor="fuse: false"  position="0 0 -1"   geometry="primitive:ring; radiusInner: 0.01; radiusOuter: 0.015"  material="color: black; shader: flat"></a-ring>
+      </a-camera> -->
     </a-scene>
   </body>
 </html>
+
+<!-- scale="0.05 0.05 0.05" -->
